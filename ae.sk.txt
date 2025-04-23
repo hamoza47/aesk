@@ -1,0 +1,982 @@
+#Made by Jaeger_Danger
+#Discord contact for any questions: Jaeger_Danger#3523
+#Please do not redistribute this script as your own!
+#If you enjoyed using this or found it useful consider leaving a review on Spigot :) Link: https://www.spigotmc.org/resources/ancientenchants-for-1-8-only.76187/
+#If you have ANY issues, tell me and I will get back to you ASAP
+
+#PLEASE USE THIS WITH OLD COMBAT MECHANICS
+
+#Do not rename this script (ae.sk) or it will not reload on the command
+
+
+options:
+
+#In my opinion these are the best settings for this type of pvp.
+
+  pyrodamage: 1.50		#Default: 1.6
+  dbdamage: 1.41		#Default: 1.33
+  lbowdamage: 1.98		#Default: 4.5
+  lifesteal: 1.5                #Default: 0.5
+  excalibur: 1.46		#Default: 1.37
+  usenameinlores: true       	#Default: false
+
+#Please do not modify below here without knowing what you are doing.
+
+  prefix: &8(&6AncientEnchants&8) &7
+
+import:
+  org.bukkit.entity.LivingEntity
+  org.bukkit.Bukkit
+  org.bukkit.Effect
+  org.bukkit.inventory.ItemStack
+  org.bukkit.plugin.PluginManager
+  org.bukkit.event.player.PlayerItemDamageEvent as idamage
+
+on skript load:
+  send "[Ancient Enchants] PAPER 1.12.2+ is required." to console
+  send "[Ancient Enchants] SKRIPT 2.5.3+ IS REQUIRED: https://github.com/SkriptLang/Skript/releases" to console
+  send "[Ancient Enchants] SKRIPT-REFLECT 2.1.0+ IS REQUIRED: https://forums.skunity.com/resources/skript-reflect.1146/" to console
+  send "[Ancient Enchants] Thanks for downloading, made by Jaeger_Danger. If you have any questions contact me on discord: Jaeger_Danger##3523" to console
+
+on script load:
+  set {_b} to "%Bukkit.getServer().getVersion()%"
+  set {_b::*} to {_b} split at " "
+  replace "(" and ")" and "MC:" in {_b::*} with ""
+  if {_b::3} contains "1.12":
+    set {anvilsound} to "BLOCK_ANVIL_LAND"
+    set {doorsound} to "ENTITY_ZOMBIE_BREAK_DOOR_WOOD"
+    set {orbsound} to "ENTITY_EXPERIENCE_ORB_PICKUP"
+    set {stepsound} to "BLOCK_CLOTH_STEP"
+    set {golemsound} to "ENTITY_IRONGOLEM_DEATH"
+    set {noteeffect} to "NOTE"
+    set {hearteffect} to "HEART"
+  if {_b::3} contains "1.13" or "1.14" or "1.15" or "1.16":
+    set {anvilsound} to "BLOCK_ANVIL_LAND"
+    set {doorsound} to "ENTITY_ZOMBIE_BREAK_WOODEN_DOOR"
+    set {orbsound} to "ENTITY_EXPERIENCE_ORB_PICKUP"
+    set {stepsound} to "BLOCK_WOOL_STEP"
+    set {golemsound} to "ENTITY_IRON_GOLEM_DEATH"
+    set {noteeffect} to "NOTE"
+    set {hearteffect} to "HEART"
+  if {_b::3} contains "1.17":
+    broadcast "THIS IS IMPOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSIBLUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+  if {_b::3} contains "1.7" or "1.8" or "1.9" or "1.10" or "1.11":
+    if {_b} is set:
+      send "" to console
+      send "" to all players where [input has permission "ae.use"]
+      send "{@prefix}&4WARNING: &fThis version of Ancient-Enchants only supports &cPAPER 1.12+ &7[Current Version: &c%{_b::3}%&7]. For 1.8 - 1.12 please use https://www.spigotmc.org/resources/ancientenchants-for-1-8-only.76187/" to console
+      send "{@prefix}&4WARNING: &fThis version of Ancient-Enchants only supports &cPAPER 1.12+ &7[Current Version: &c%{_b::3}%&7]. For 1.8 - 1.12 please use https://www.spigotmc.org/resources/ancientenchants-for-1-8-only.76187/" to all players where [input has permission "ae.use"]
+      send "" to console
+      send "" to all players where [input has permission "ae.use"]
+  set {_a} to "%Bukkit.getServer().getPluginManager().getPlugins()%"
+  if {_a} does not contain "Skript v2.5" or "Skript v2.6" or "Skript v2.7" or "Skript v2.8" or "Skript v2.9" or "Skript v3." or "Skript v4.":
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+    send "{@prefix}&4&lWARNING: &cSkript 2.5.3+ &cis required. &fPlease download it now! https://github.com/SkriptLang/Skript/releases" to console
+    send "{@prefix}&4&lWARNING: &cSkript 2.5.3+ &cis required. &fPlease download it now! https://github.com/SkriptLang/Skript/releases" to all players where [input has permission "ae.use"]
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+  if {_a} does not contain "skript-reflect":
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+    send "{@prefix}&4&lWARNING: &cSkript-Reflect is required! &fPlease download it now! https://forums.skunity.com/resources/skript-reflect.1146/" to console
+    send "{@prefix}&4&lWARNING: &cSkript-Reflect is required! &fPlease download it now! https://forums.skunity.com/resources/skript-reflect.1146/" to all players where [input has permission "ae.use"]
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+  if {_b} is not set:
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+    send "&nREAD BELOW!!!!!!!!!!!!!!" to console
+    send "" to all players where [input has permission "ae.use"]
+    broadcast "&4&l&nWARNING: &fYou &4&l&nNEED &fto download &4&l&nSkript-Reflect&f for AncientEnchants to work properly! &f(&c&nREAD ALL WARNINGS&f) Download it now: https://forums.skunity.com/resources/skript-reflect.1146/"
+    send "&nREAD ABOVE!!!!!!!!!!!!!!" to console
+    send "" to all players where [input has permission "ae.use"]
+    send "" to console
+    send "" to all players where [input has permission "ae.use"]
+  clear {apollo}
+  clear {aegis}
+  clear {eth}
+  clear {hermes}
+  clear {excal}
+  clear {jump}
+  clear {herc}
+  clear {achil}
+  clear {gills}
+  clear {haste}
+  clear {booster}
+  clear {pyro}
+  clear {db}
+  clear {lbow}
+  set {excal} to diamond sword
+  set {excal}'s lore to "&4Pulled from the grave of King Arthur"
+  enchant {excal} with sharpness 5 and fire aspect 2
+  set {excal}'s name to "&f&l*&b&lExcalibur&f&l*"
+  set {pyro} to diamond axe with lore "&4I come from the Iron Hills"
+  enchant {pyro} with sharpness 5 and fire aspect 2
+  set {pyro}'s name to "&4Pyro Axe"
+  set {db} to diamond sword with lore "&4Death Sword" and "&4&oLifesteal"
+  enchant {db} with sharpness 5 and fire aspect 2
+  set {db}'s name to "&4&lD&6&le&4&la&6&lt&4&lh &4&lB&6&lr&4&li&6&ln&4&lg&6&le&4&lr"
+  set {lbow} to bow with lore "&4Lightning"
+  enchant {lbow} with power 5 and flame 1
+  set {lbow}'s name to "&4Lightning Bow"
+  set {apollo} to diamond helmet with lore "&4Glowing" and "&4Implants"
+  enchant {apollo} with protection 5 and fire protection 4 and unbreaking 3 and aqua affinity 1
+  set {apollo}'s name to "&bApollo's Crest"
+  set {aegis} to diamond chestplate with lore "&2Infused with Strength"
+  enchant {aegis} with protection 5 and fire protection 4 and thorns 3 and unbreaking 3
+  set {aegis}'s name to "&4*&8Aegis&4*"
+  set {eth} to diamond leggings with lore "&3Infused with Invisibility"
+  enchant {eth} with protection 5 and fire protection 4 and thorns 3 and unbreaking 3
+  set {eth}'s name to "&8Ethereals"
+  set {hermes} to diamond boots with lore "&6Infused with Speed"
+  enchant {hermes} with protection 5 and fire protection 4 and unbreaking 3 and feather falling 4
+  set {hermes}'s name to "&6Hermes Boots"
+  set {jump} to leather boots with lore "&fInfused with Air"
+  enchant {jump} with protection 5 and fire protection 4 and unbreaking 10 and feather falling 4
+  set {jump}'s name to "&2Jumping Boots"
+  set {herc} to diamond leggings with lore "&5Infused with Regeneration"
+  enchant {herc} with protection 5 and fire protection 4 and thorns 3 and unbreaking 3
+  set {herc}'s name to "&5Hercules"
+  set {achil} to a diamond helmet with lore "&eInfused with Health"
+  enchant {achil} with protection 5 and fire protection 4 and unbreaking 3 and aqua affinity 1
+  set {achil}'s name to "&f&l+&eAchilles&f&l+"
+  set {gills} to diamond chestplate with lore "&9Infused with Gills"
+  set {gills}'s name to "&9Gills"
+  enchant {gills} with protection 5 and fire protection 4 and thorns 3 and unbreaking 3
+  set {booster} to diamond boots with lore "&eInfused with Booster"
+  set {booster}'s name to "&cBooster Boots"
+  enchant {booster} with protection 5 and fire protection 4 and unbreaking 3 and feather falling 4
+  set {haste} to diamond helmet with lore "&aInfused with Haste"
+  set {haste}'s name to "&aHaste Helmet"
+  enchant {haste} with protection 5 and fire protection 4 and unbreaking 3 and aqua affinity 1
+  send "{@prefix}&7- &aLoaded." to all players where [input has permission "ae.use"]
+  send "{@prefix}&7- &aLOADED SUCCESSFULLY - Please check for errors" to console
+
+
+#Ae Core Commands
+
+command /aegive [<player>] [<text>]:
+  aliases: /ancientgive, /ancientenchantsgive, /aenchantsgive, /aeg
+  permission: ae.use
+  permission message: {@prefix} - Developed by &6Jaeger_Danger. &4You don't have permission &bae.use&4.
+  trigger:
+    if arg-1 is not set:
+      send "{@prefix}You need to define a player then an item after this command. Try /ae help." to command sender
+      stop
+    if arg-1 is set:
+      if arg-2 is not set:
+        send "{@prefix}You need to define an item after this command. Try /ae help." to command sender
+        stop
+      if arg-2 is set:
+        if arg-2 is "apollo" or "apollos" or "crest" or "helm" or "helmet":
+          send "{@prefix}You have received &cApollos Crest&7 from %command sender%" to arg-1
+          set {_apollo} to {apollo}
+          set {_apollo} to addLoredName("%arg-1%", {apollo}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cApollos Crest&7 to %arg-1%" to command sender
+          give arg-1 {_apollo}
+          stop
+
+        if arg-2 is "aegis" or "strength" or "chest" or "chestplate":
+          send "{@prefix}You have received &cAegis Chestplate&7 from %command sender%" to arg-1
+          set {_aegis} to {aegis}
+          set {_aegis} to addLoredName("%arg-1%", {aegis}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cAegis Chestplate&7 to %arg-1%" to command sender
+          give arg-1 {_aegis}
+          stop
+
+        if arg-2 is "eths" or "ethereals" or "invis" or "invisibility" or "legs" or "leggings":
+          send "{@prefix}You have received &cEthereal Leggings&7 from %command sender%" to arg-1
+          set {_eth} to {eth}
+          set {_eth} to addLoredName("%arg-1%", {eth}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cEthereal Leggings&7 to %arg-1%" to command sender
+          give arg-1 {_eth}
+          stop
+
+        if arg-2 is "herm" or "herms" or "hermes" or "hermes boots" or "boots" or "speed":
+          send "{@prefix}You have received &cHermes Boots&7 from %command sender%" to arg-1
+          set {_hermes} to {hermes}
+          set {_hermes} to addLoredName("%arg-1%", {hermes}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cHermes Boots&7 to %arg-1%" to command sender
+          give arg-1 {_hermes}
+          stop
+
+        if arg-2 is "hercules" or "hercs" or "hercules leggings" or "herc leggings" or "herc legs" or "herc" or "gap" or "gap legs" or "gapple leggings" or "gapple":
+          send "{@prefix}You have received &cHercules Leggings&7 from %command sender%" to arg-1
+          set {_herc} to {herc}
+          set {_herc} to addLoredName("%arg-1%", {herc}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cHercules Leggings&7 to %arg-1%" to command sender
+          give arg-1 {_herc}
+          stop
+
+        if arg-2 is "achilles" or "achils" or "achilles helmet" or "achills" or "achil" or "achils":
+          send "{@prefix}You have received &cAchilles Helmet&7 from %command sender%" to arg-1
+          set {_achil} to {achil}
+          set {_achil} to addLoredName("%arg-1%", {achil}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cAchilles Helmet&7 to %arg-1%" to command sender
+          give arg-1 {_achil}
+          stop
+
+        if arg-2 is "jump" or "jumping" or "jumping boots" or "air" or "jump boots" or "jump boot":
+          send "{@prefix}You have received &cJumping Boots&7 from %command sender%" to arg-1
+          set {_jump} to {jump}
+          set {_jump} to addLoredName("%arg-1%", {jump}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cJumping Boots&7 to %arg-1%" to command sender
+          give arg-1 {_jump}
+          stop
+
+        if arg-2 is "gills" or "gills chest" or "gill" or "gill chestplate" or "water breath" or "water breathing" or "breathing" or "water":
+          send "{@prefix}You have received &cGills Chestplate&7 from %command sender%" to arg-1
+          set {_gills} to {gills}
+          set {_gills} to addLoredName("%arg-1%", {gills}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cGills Chestplate&7 to %arg-1%" to command sender
+          give arg-1 {_gills}
+          stop
+
+        if arg-2 is "booster" or "boost" or "booster boots" or "boost boots" or "boosted":
+          send "{@prefix}You have received &cBooster Boots&7 from %command sender%" to arg-1
+          set {_booster} to {booster}
+          set {_booster} to addLoredName("%arg-1%", {booster}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cBooster Boots&7 to %arg-1%" to command sender
+          give arg-1 {_booster}
+          stop
+
+        if arg-2 is "haste" or "haste helmet" or "haste helm":
+          send "{@prefix}You have received &cHaste Helmet&7 from %command sender%" to arg-1
+          set {_haste} to {haste}
+          set {_haste} to addLoredName("%arg-1%", {haste}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &cHaste Helmet&7 to %arg-1%" to command sender
+          give arg-1 {_haste}
+          stop
+
+        if arg-2 is "pyro" or "axe" or "pyroaxe" or "pyro axe":
+          send "{@prefix}You have received &4Pyro Axe&7 from %command sender%" to arg-1
+          set {_pyro} to {pyro}
+          set {_pyro} to addLoredName("%arg-1%", {pyro}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &4Pyro Axe&7 to %arg-1%" to command sender
+          give arg-1 {_pyro}
+          stop
+
+        if arg-2 is "db" or "sword" or "deathbringer":
+          send "{@prefix}You have received &4Death Bringer&7 from %command sender%" to arg-1
+          set {_db} to {db}
+          set {_db} to addLoredName("%arg-1%", {db}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &4Death Bringer&7 to %arg-1%" to command sender
+          give arg-1 {_db}
+          stop
+
+        if arg-2 is "lbow" or "bow" or "lightning" or "lightning bow":
+          send "{@prefix}You have received &4Lightning Bow&7 from %command sender%" to arg-1
+          set {_lbow} to {lbow}
+          set {_lbow} to addLoredName("%arg-1%", {lbow}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &4Lightning Bow&7 to %arg-1%" to command sender
+          give arg-1 {_lbow}
+          give arg-1 32 arrows
+          stop
+
+        if arg-2 is "excal" or "excalibur":
+          send "{@prefix}You have received &4Excalibur&7 from %command sender%" to arg-1
+          set {_excal} to {excal}
+          set {_excal} to addLoredName("%arg-1%", {excal}) if {@usenameinlores} is true
+          if arg-1 is not command sender:
+            send "{@prefix}You have given &4Excalibur&7 to %arg-1%" to command sender
+          give arg-1 {excal}
+          stop
+
+        else:
+          send "{@prefix}This item does not exist. Please try /ae help." to command sender
+          stop
+
+
+command /ae [<text>] [<text>] [<text>]:
+  aliases: /ancient, /ancientenchants, /aenchants
+  permission: ae.use
+  permission message: {@prefix} - Developed by &6Jaeger_Danger. &4You don't have permission &bae.use&4.
+  trigger:
+    if arg-1 is not set:
+      send "{@prefix}- Developed by &6Jaeger_Danger." to command sender
+      send "{@prefix}- /ae help and /ae info. Use /ae reload to reload the script." to command sender
+      stop
+    if arg-1 is "info":
+      send "" to command sender
+      send "{@prefix}- Weapon damage is set to the following:" to command sender
+      send "" to command sender
+      send "&4Pyro Axe&7: &ax{@pyrodamage} Damage" to command sender
+      send "&4Lightning Bow&7: &ax{@lbowdamage} Damage" to command sender
+      send "&4D&6e&4a&6t&4h &4B&6r&4i&6n&4g&6e&4r&7: &ax{@dbdamage} Damage &7| &aHeals {@lifesteal} Hearts" to command sender
+      send "&f&l*&b&lExcalibur&f&l*&7: &ax{@excalibur} Damage" to command sender
+      send "" to command sender
+      stop
+    if arg-1 is "help":
+      send "{@prefix}- /ae reload, /ae help, /ae info, /ae enchant (same argument as give. eg: apollo/pyro/hermes etc.)" to command sender
+      send "{@prefix}- /ae give (player) (apollos, aegis, ethereals, hermes, achilles, hercules, gills, booster, haste, jump, pyro, deathbringer, lbow, excalibur)" to command sender
+      stop
+    if arg-1 is "reload":
+      send "{@prefix}- Reloading..." to command sender
+      execute console command "/skript reload ae"
+      send "{@prefix}- Please check console for any errors." to command sender
+      stop
+    if arg-1 is "give":
+      if arg-2 is not set:
+        send "{@prefix}- Please see /ae help" to command sender
+      if arg-3 is set:
+        set {_t} to arg-2 parsed as a player
+        make command sender execute command "/aegive %{_t}% %arg-3%"
+        stop
+      if arg-3 is not set:
+        if command sender is not console:
+          make command sender execute command "/aegive %command sender% %arg-2%"
+          stop
+        if command sender is console:
+          send "{@prefix}- You can't give yourself items as console." to command sender
+          stop
+    if arg-1 is "enchant" or "ench" or "e":
+      if command sender is not a player:
+        send "{@prefix}Sorry, this command can only be used by players." to command sender
+        stop
+      if arg-2 is "apollo" or "apollos" or "crest" or "helm" or "helmet":
+        if player's held item is not a helmet:
+          send "{@prefix}This enchantment can only be applied to a Helmet" to player
+          stop
+        send "{@prefix}You have created &cApollo's Crest" to player
+        make player execute command "/lore add &4Glowing"
+        make player execute command "/lore add &4Implants"
+        stop
+      if arg-2 is "aegis" or "strength" or "chest" or "chestplate":
+        if player's held item is not a chestplate:
+          send "{@prefix}This enchantment can only be applied to a Chestplate" to player
+          stop
+        send "{@prefix}You have created &cAegis Chestplate" to player
+        make player execute command "/lore add &2Infused with Strength"
+        stop
+      if arg-2 is "eths" or "ethereals" or "invis" or "invisibility" or "legs" or "leggings":
+        if player's held item is not leggings:
+          send "{@prefix}This enchantment can only be applied to Leggings" to player
+          stop
+        send "{@prefix}You have created &cEtherals" to player
+        make player execute command "/lore add &3Infused with Invisibility"
+        stop
+      if arg-2 is "herm" or "herms" or "hermes" or "hermes boots" or "boots" or "speed":
+        if player's held item is not boots:
+          send "{@prefix}This enchantment can only be applied to Boots" to player
+          stop
+        send "{@prefix}You have created &cHermes Boots" to player
+        make player execute command "/lore add &6Infused with Speed"
+        stop
+      if arg-2 is "hercules" or "hercs" or "hercules leggings" or "herc leggings" or "herc legs" or "herc" or "gap" or "gap legs" or "gapple leggings" or "gapple":
+        if player's held item is not leggings:
+          send "{@prefix}This enchantment can only be applied to Leggings" to player
+          stop
+        send "{@prefix}You have created &cHercules Leggings" to player
+        make player execute command "/lore add &5Infused with Regeneration"
+        stop
+      if arg-2 is "achilles" or "achils" or "achilles helmet" or "achills" or "achil" or "achils":
+        if player's held item is not a helmet:
+          send "{@prefix}This enchantment can only be applied to a Helmet" to player
+          stop
+        send "{@prefix}You have created &cAchilles Helmet" to player
+        make player execute command "/lore add &eInfused with Health"
+        stop
+      if arg-2 is "jump" or "jumping" or "jumping boots" or "air" or "jump boots" or "jump boot":
+        if player's held item is not boots:
+          send "{@prefix}This enchantment can only be applied to Boots" to player
+          stop
+        send "{@prefix}You have created &cJumping Boots" to player
+        make player execute command "/lore add &fInfused with Air"
+        stop
+      if arg-2 is "gills" or "gills chest" or "gill" or "gill chestplate" or "water breath" or "water breathing" or "breathing" or "water":
+        if player's held item is not a chestplate:
+          send "{@prefix}This enchantment can only be applied to a Chestplate" to player
+          stop
+        send "{@prefix}You have created &cGills Chestplate" to player
+        make player execute command "/lore add &9Infused with Gills"
+        stop
+      if arg-2 is "booster" or "boost" or "booster boots" or "boost boots" or "boosted":
+        if player's held item is not boots:
+          send "{@prefix}This enchantment can only be applied to Boots" to player
+          stop
+        send "{@prefix}You have created &cBooster Boots" to player
+        make player execute command "/lore add &eInfused with Booster"
+        stop
+      if arg-2 is "haste" or "haste helmet" or "haste helm":
+        if player's held item is not a helmet:
+          send "{@prefix}This enchantment can only be applied to a Helmet" to player
+          stop
+        send "{@prefix}You have created &cHaste Helmet" to player
+        make player execute command "/lore add &aInfused with Haste"
+        stop
+      if arg-2 is "pyro" or "axe" or "pyroaxe" or "pyro axe":
+        if player's held item is air:
+          send "{@prefix}This enchantment can not be applied to Air" to player
+          stop
+        send "{@prefix}You have created &4Pyro Axe" to player
+        make player execute command "/lore add &4I come from the Iron Hills"
+        stop
+      if arg-2 is "db" or "sword" or "deathbringer":
+        if player's held item is air:
+          send "{@prefix}This enchantment can not be applied to Air" to player
+          stop
+        send "{@prefix}You have created &4Death Bringer" to player
+        make player execute command "/lore add &4&oDeathbringer"
+        make player execute command "/lore add &4&oLifesteal"
+        stop
+      if arg-2 is "lbow" or "bow" or "lightning" or "lightning bow":
+        if player's held item is not a bow:
+          send "{@prefix}This enchantment can only be applied to a Bow" to player
+          stop
+        send "{@prefix}You have created &4Lightning Bow" to player
+        make player execute command "/lore add &4Lightning"
+        stop
+      if arg-2 is "excal" or "excalibur":
+        if player's held item is not a sword:
+          send "{@prefix}This enchantment can only be applied to swords" to player
+          stop
+        send "{@prefix}You have created the &4Excalibur" to player
+        make player execute command "/lore add &4Pulled from the grave of King Arthur"
+        stop
+      else:
+        send "{@prefix}Enchantment not found, Please do /ae help" to command sender
+        stop
+    else:
+      send "{@prefix}- &cSorry, I don't recognise this. Please do /ae help." to command sender
+
+
+#Lore command for /ae enchant
+
+command /lore [<text>] [<text>] [<integer>]:
+  aliases: /lores
+  permission: lores.use
+  permission message: &4You don't have permission to use this command.
+  trigger:
+    if arg-1 is "set":
+      if player's held item is air:
+        send "&cYou can't change the lore of air." to player
+      if player's held item is not air:
+        if arg-2 is set:
+          if arg-3 is set:
+            if arg-3 is an integer:
+              set {_a} to arg-3
+              send "&aLore on line &7%{_a}% &aset to &5%colored arg-2%&a." to player
+              set the {_a}st line of the player's held item's lore to colored arg-2
+            if arg-3 is not an integer:
+              send "&cYou must set a line number /lore set <lore> <line number>" to player
+              stop
+          if arg-3 is not set:
+            send "&cYou must set a line number /lore set <lore> <line number>" to player
+            stop
+        if arg-2 is not set:
+          send "&c&lHelp for /lore:"
+          send "&7&m----------------------------------------------------------------"
+          send "&3While holding item you wish to change:"
+          send "&3Set any line to a lore on the item &c/lore set <lore> <line number>."
+          send "&7&m----------------------------------------------------------------"
+    if arg-1 is "clear":
+      if player's held item is air:
+        send "&cYou can't change the lore of air." to player
+      if player's held item is not air:
+        set the lore of player's held item to ""
+        delete the 1st line of the player's held item's lore
+        send "&aLore has been &ccleared" to player
+    if arg-1 is "add":
+      if player's held item is air:
+        send "&cYou can't change the lore of air." to player
+      if player's held item is not air:
+        if arg-2 is set:
+          set {_l} to 1
+          if the 1st line of player's tool's lore is not set:
+            set the 1st line of the player's held item's lore to colored arg-2
+            send "&aLore on line &71 &aset to &5%colored arg-2%&a." to player
+            stop
+          while line {_l} of player's tool's lore is set:
+            if line {_l} of player's tool's lore is set:
+              add 1 to {_l}
+            if line {_l} of player's tool's lore is not set:
+              set the {_l}st line of the player's held item's lore to colored arg-2
+              send "&aLore on line &7%{_l}% &aset to &5%colored arg-2%&a." to player
+              exit loop
+        if arg-2 is not set:
+          send "&c&lHelp for /lore:"
+          send "&7&m----------------------------------------------------------------"
+          send "&3While holding item you wish to change:"
+          send "&3Add a line to the next unset space for a lore on the item /lore add <lore>."
+          send "&7&m----------------------------------------------------------------"
+    if arg-1 is "remove" or "delete":
+      if player's held item is air:
+        send "&cYou can't change the lore of air." to player
+      if player's held item is not air:
+        set {_integer} to arg-2 parsed as integer
+        if {_integer} is an integer:
+          send "&aLore on line &7%{_integer}% &ahas been &ccleared." to player
+          delete the {_integer}st line of the player's held item's lore
+          if {_integer} is not an integer:
+            send "&cYou must set a line number /lore set <lore> <line number>" to player
+        if arg-2 is not set:
+          send "&c&lHelp for /lore:"
+          send "&7&m----------------------------------------------------------------"
+          send "&3While holding item you wish to change:"
+          send "&3Delete a line of lore from item &c/lore remove <line number>."
+          send "&7&m----------------------------------------------------------------"
+    if arg-1 is "help":
+      send "&c&lHelp for /lore:"
+      send "&7&m----------------------------------------------------------------"
+      send "&3While holding item you wish to change:"
+      send "&3Set any line to a lore on the item &c/lore set <lore> <line number>."
+      send "&3Add a line to the next unset space for a lore on the item &c/lore add <lore>."
+      send "&3Clear the items lore &c/lore clear."
+      send "&3Delete a line of lore from item &c/lore remove <line number>."
+      send "&3Thanks for downloading, made by Jaeger_Danger."
+      send "&7&m----------------------------------------------------------------"
+    if arg-1 is set:
+      if arg-1 is not "help" or "remove" or "add" or "set" or "clear" or "delete":
+        send "&cThats not a known command, try /lore help."
+    if arg-1 is not set:
+      send "&c&lHelp for /lore:"
+      send "&7&m----------------------------------------------------------------"
+      send "&3While holding item you wish to change:"
+      send "&3Set any line to a lore on the item &c/lore set <lore> <line number>."
+      send "&3Add a line to the next unset space for a lore on the item &c/lore add <lore>."
+      send "&3Clear the items lore &c/lore clear."
+      send "&3Delete a line of lore from item &c/lore remove <line number>."
+      send "&3Thanks for downloading, made by Jaeger_Danger."
+      send "&7&m----------------------------------------------------------------"
+
+
+#Rename command /rename
+
+command /rename [<text>]:
+  aliases: /rname
+  permission: lores.use
+  permission message: &4You don't have permission to use this command.
+  trigger:
+    if arg-1 is set:
+      if player's held item is air:
+        send "&cYou can't change the name of air." to player
+      else:
+        set name of player's held item to colored arg-1
+        send "&aRenamed to %colored arg-1%" to player
+    if arg-1 is not set:
+      send "&cUse /rename [name]" to player
+
+
+#Toggle Ethereal Invisibility
+
+command /etg:
+  aliases: /ethstoggle, /etoggle, /etog
+  permission: eths.toggle
+  permission message: &eYou don't have permission &ceths.toggle
+  trigger:
+    if {eths::%player%} is not set:
+      set {eths::%player%} to false
+      send "{@prefix} &aYou have disabled Invisibility with Ethereals" to player
+      if "%lore of player's leggings%" contains "Infused with Invisibility":
+        remove invisibility from player
+      stop
+    if {eths::%player%} is true:
+      set {eths::%player%} to false
+      send "{@prefix} &aYou have disabled Invisibility with Ethereals" to player
+      if "%lore of player's leggings%" contains "Infused with Invisibility":
+        remove invisibility from player
+      stop
+    if {eths::%player%} is false:
+      set {eths::%player%} to true
+      send "{@prefix} &aYou have enabled Invisibility with Ethereals" to player
+      if "%lore of player's leggings%" contains "Infused with Invisibility":
+        apply invisibility 1 to player for 99 days
+      stop
+
+
+#Physical Code Start
+
+#Durability
+
+on damage of player:
+  clear metadata value "last-attacker" of victim if victim is a player
+  attacker is not victim
+  "%damage cause%" is "attack"
+  set metadata value "last-attacker" of victim to attacker
+
+on idamage:
+  set {_p} to event.getPlayer()
+  set {_a} to metadata value "last-attacker" of {_p}
+  set {_unb} to level of unbreaking of event.getItem()
+  set {_str} to 3 if "%{_a}.getPotionEffect(Strength)%" contains "tier 2"
+  set {_str} to 2 if "%{_a}.getPotionEffect(Strength)%" contains "tier 1"
+  set {_str} to 0.5 if {_a}.getPotionEffect(Strength) is not set
+  set {_unb} to {_unb} + 1
+  if "%lore of {_a}'s tool%" contains "&4I come from the Iron Hills" or "&4Pulled from the grave of King Arthur" or "&4&oDeathbringer":
+    if event.getItem() is a helmet:
+      event.setDamage((0.03 * max durability of event.getItem() / {_unb}) * {_str})
+    else if event.getItem() is a chestplate:
+      event.setDamage((0.01525 * max durability of event.getItem() / {_unb}) * {_str})
+    else if event.getItem() is leggings:
+      if {_str} = 0.5:
+        event.setDamage(random number between 1 and 10)
+      else:
+        event.setDamage((0.015 * max durability of event.getItem() / {_unb}) * {_str})
+    else if event.getItem() is a boots:
+      event.setDamage((0.02825 * max durability of event.getItem() / {_unb}) * {_str})
+
+#Weaponry
+
+#Pyro Axe
+
+on damage:
+  attacker is a player
+  victim is a monster or player or animal
+  "%damage cause%" is "attack"
+  "%damage cause%" is not "thorns"
+  "%lore of the attacker's tool%" contains "&4I come from the Iron Hills":
+    play sound "%{doorsound}%" with volume 1 with pitch 1 at victim for all players
+    play sound "%{anvilsound}%" with volume 1 with pitch 0 at victim for all players
+    if damage / final damage < 0:
+      set damage to (random number between 20 and 25)
+      stop
+    set {_damage} to tuneDamage(damage, attacker, {@pyrodamage})
+    set damage to {_damage}
+
+
+#Death Bringer
+
+on damage:
+  attacker is a player
+  victim is a monster or player or animal
+  "%damage cause%" is "attack"
+  "%damage cause%" is not "thorns"
+  "%lore of the attacker's tool%" contains "&4&oDeathbringer":
+    play sound "%{orbsound}%" with volume 1 with pitch 1 at victim for all players
+    if damage / final damage < 0:
+      set damage to (random number between 20 and 25)
+      stop
+    set {_damage} to tuneDamage(damage, attacker, {@dbdamage})
+    set damage to {_damage}
+
+#Lifesteal
+
+on damage:
+  attacker is a player
+  victim is a monster or player or animal
+  "%damage cause%" is "attack"
+  "%damage cause%" is not "thorns"
+  "%lore of the attacker's tool%" contains "&4&oLifesteal":
+    if victim's health is greater than 2:
+      play sound "%{stepsound}%" with volume 1 with pitch 1 at victim for all players
+      heal attacker by {@lifesteal} hearts
+
+#Excalibur
+
+on damage:
+  attacker is a player
+  victim is a monster or player or animal
+  "%damage cause%" is "attack"
+  "%damage cause%" is not "thorns"
+  "%lore of attacker's tool%" contains "&4Pulled from the grave of King Arthur":
+    play sound "%{golemsound}%" with volume 2 and pitch 0.1 at victim for all players
+    play sound "%{doorsound}%" with volume 2 and pitch 1 at victim for all players
+    play 4 heart at victim
+    play 1 note at victim
+    if damage / final damage < 0:
+      set damage to (random number between 20 and 25)
+      stop
+    set {_damage} to tuneDamage(damage, attacker, {@excalibur})
+    set damage to {_damage}
+
+#Lightning Bow
+
+on load:
+  clear {lbowarrows::*}
+
+on quit:
+  clear {lbowarrows::%player%}
+
+on shoot:
+  shooter is a player
+  "%projectile%" is "arrow"
+  "%lore of shooter's held item%" contains "&4Lightning":
+    add 1 to {lbowarrows::%shooter%}
+
+on damage:
+  attacker is a player
+  victim is a monster or player or animal
+  attacker is not victim
+  "%damage cause%" is "projectile"
+  "%projectile%" is "arrow"
+  if {lbowarrows::%attacker%} is not set:
+    stop
+  if {lbowarrows::%attacker%} is 0:
+    stop
+  if {lbowarrows::%attacker%} is greater than 0:
+    remove 1 from {lbowarrows::%attacker%}
+    strike lightning effect at victim
+    if damage / final damage < 0:
+      set damage to 15
+      stop
+    set {_d} to damage * {@lbowdamage}
+    set damage to {_d}
+
+on projectile hit:
+  wait 1 tick
+  if {lbowarrows::%shooter%} is not set:
+    stop
+  if {lbowarrows::%shooter%} is 0:
+    stop
+  remove 1 from {lbowarrows::%shooter%}
+
+
+#Armor
+
+#Implants
+
+on hunger meter change:
+  if "%lore of player's helmet%" contains "Implants":
+    set player's hunger meter to 10
+    set player's saturation to 10
+
+#Booster Boots
+
+on sneak toggle:
+  player is sneaking
+  if "%lore of player's boots%" contain "&eInfused with Booster":
+    if "%y of player's velocity%" is "-0.0784000015258789" or "-0.08":
+      set {_n} to 0.9
+      difference between {lastboost::%player%} and now is greater than 30 ticks
+      set {lastboost::%player%} to now
+      loop 2 times:
+        set {_loc} to block 2 in front of player
+        set {_loc}'s y coord to player's y coord + {_n}
+        set {_n} to -0.1
+        set {_v} to vector from player's location to {_loc}
+        set player's velocity to {_v}
+        wait 5 ticks
+
+#Equip / UnEquip
+
+on armor change:
+  wait 1 tick
+  rCheckPotions(player)
+  wait 1 tick
+  aCheckPotions(player)
+
+#This stops plugins like essentials removing your effects for /heal etc
+
+on heal:
+  if "%heal reason%" is "unknown":
+    wait 1 tick
+    aCheckPotions(player)
+
+#Multi Inventory support / Seperate world inventories (If a player had potion effects that carried through to a different world, but lost their armor, this will remove the pot effects that are over the duration limit)
+
+on world change:
+  wait 2 seconds
+  rCheckPotions(player)
+  wait 1 tick
+  aCheckPotions(player)
+
+#KeepInventory support / Respawn support
+
+on respawn:
+  wait 1 second
+  rCheckPotions(player)
+  wait 1 tick
+  aCheckPotions(player)
+
+
+#Login debug
+
+on join:
+  set {lastboost::%player%} to now
+  set metadata value "critical" of player to now
+  wait 1 second
+  rCheckPotions(player)
+  wait 1 tick
+  aCheckPotions(player)
+
+#Breaking
+
+on tool break:
+  if event-item is a helmet or chestplate or leggings or boots:
+    rCheckPotions(player)
+    wait 1 tick
+    aCheckPotions(player)
+
+
+
+#Functions
+
+
+function rCheckPotions(p: player):
+  set {_a} to "%{_p}.getActivePotionEffects()%"
+  replace "t-x1" and "t-x0" and "t-x2" and "t-x3" and "t-x4" and "[" and "]" and "," in {_a} with ""
+  set {_alist::*} to {_a} split at " "
+  loop {_alist::*}:
+    set {_blist::*} to loop-value split at ":"
+    set {_pduration} to {_blist::2} parsed as a number / 20
+    if {_pduration} is greater than 900:
+      set {_potion} to {_blist::1}
+      replace "_" in {_potion} with " "
+      set {_potion} to {_potion} parsed as a potion type
+      if "%{_potion}%" is "night vision":
+        if "%lore of {_p}'s helmet%" doesn't contain "Implants":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "haste":
+        if "%lore of {_p}'s helmet%" doesn't contain "Infused with Haste":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "health boost":
+        if "%lore of {_p}'s helmet%" doesn't contain "Infused with Health":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "speed":
+        if "%lore of {_p}'s boots%" doesn't contain "speed":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "jump boost":
+        if "%lore of {_p}'s boots%" doesn't contain "Infused with Air":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "strength":
+        if "%lore of {_p}'s chestplate%" doesn't contain "Infused with Strength":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "water breathing":
+        if "%lore of {_p}'s chestplate%" doesn't contain "Infused with Gills":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "invisibility":
+        if "%lore of {_p}'s leggings%" doesn't contain "Infused with Invisibility":
+          remove {_potion} from {_p}
+      if "%{_potion}%" is "regeneration" or "absorption" or "resistance" or "fire resistance":
+        if "%lore of {_p}'s leggings%" doesn't contain "Infused with Regeneration":
+          remove {_potion} from {_p}
+
+function aCheckPotions(p: player):
+  if "%lore of {_p}'s helmet%" contains "Glowing":
+    apply night vision 1 to {_p} for 99 days
+  if "%lore of {_p}'s helmet%" contains "Infused with Haste":
+    apply haste 2 to {_p} for 99 days
+  if "%lore of {_p}'s helmet%" contains "Infused with Health":
+    apply health boost 1 to {_p} for 99 days
+  if "%lore of {_p}'s chestplate%" contains "Infused with Strength":
+    apply strength 2 to {_p} for 99 days
+  if "%lore of {_p}'s chestplate%" contains "Infused with Gills":
+    apply water breathing 1 to {_p} for 99 days
+  if "%lore of {_p}'s leggings%" contains "Infused with Invisibility":
+    if {eths::%{_p}%} is true:
+      apply invisibility 1 to {_p} for 99 days
+    if {eths::%{_p}%} is not set:
+      apply invisibility 1 to {_p} for 99 days
+  if "%lore of {_p}'s leggings%" contains "Infused with Regeneration":
+    apply regeneration 5 to {_p} for 99 days
+    apply absorption 1 to {_p} for 99 days
+    apply resistance 1 to {_p} for 99 days
+    apply fire resistance 1 to {_p} for 99 days
+  if "%lore of {_p}'s boots%" contains "Infused with Speed":
+    apply speed 2 to {_p} for 99 days
+  if "%lore of {_p}'s boots%" contains "Infused with Air":
+    apply jump boost 2 to {_p} for 99 days
+
+function removePotions(p: player, ei: item):
+  if "%lore of {_ei}%" contains "Glowing":
+    remove night vision from {_p}
+  if "%lore of {_ei}%" contains "Infused with Haste":
+    remove haste from {_p}
+  if "%lore of {_ei}%" contains "Infused with Health":
+    remove health boost from {_p}
+  if "%lore of {_ei}%" contains "Infused with Strength":
+    remove strength from {_p}
+  if "%lore of {_ei}%" contains "Infused with Gills":
+    remove water breathing from {_p}
+  if "%lore of {_ei}%" contains "Infused with Invisibility":
+    if {eths::%{_p}%} is true:
+      remove invisibility from {_p}
+    if {eths::%{_p}%} is not set:
+      remove invisibility from {_p}
+  if "%lore of {_ei}%" contains "Infused with Regeneration":
+    remove regeneration from {_p}
+    remove absorption from {_p}
+    remove resistance from {_p}
+    remove fire resistance from {_p}
+  if "%lore of {_ei}%" contains "Infused with Speed":
+    remove speed from {_p}
+  if "%lore of {_ei}%" contains "Infused with Air":
+    remove jump boost from {_p}
+
+function applyPotions(p: player, ei: item):
+  if "%lore of {_ei}%" contains "Glowing":
+    wait 1 tick
+    if "%lore of {_p}'s helmet%" contains "Glowing":
+      apply night vision 1 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Implants":
+    wait 1 tick
+    if "%lore of {_p}'s helmet%" contains "Implants":
+      add 0.5 to {_p}'s hunger meter
+  if "%lore of {_ei}%" contains "Infused with Haste":
+    wait 1 tick
+    if "%lore of {_p}'s helmet%" contains "Infused with Haste":
+      apply haste 2 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Health":
+    wait 1 tick
+    if "%lore of {_p}'s helmet%" contains "Infused with Health":
+      apply health boost 1 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Strength":
+    wait 1 tick
+    if "%lore of {_p}'s chestplate%" contains "Infused with Strength":
+      apply strength 2 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Gills":
+    wait 1 tick
+    if "%lore of {_p}'s chestplate%" contains "Infused with Gills":
+      apply water breathing 1 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Invisibility":
+    wait 1 tick
+    if "%lore of {_p}'s leggings%" contains "Infused with Invisibility":
+      if {eths::%{_p}%} is true:
+        apply invisibility 1 to {_p} for 99 days
+      if {eths::%{_p}%} is not set:
+        set {eths::%{_p}%} to true
+        send "{@prefix} &aUse /etg to toggle your invisibility on and off while wearing Ethereals" to {_p}
+        apply invisibility 1 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Regeneration":
+    wait 1 tick
+    if "%lore of {_p}'s leggings%" contains "Infused with Regeneration":
+      apply regeneration 5 to {_p} for 99 days
+      apply absorption 1 to {_p} for 99 days
+      apply resistance 1 to {_p} for 99 days
+      apply fire resistance 1 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Speed":
+    wait 1 tick
+    if "%lore of {_p}'s boots%" contains "Infused with Speed":
+      apply speed 2 to {_p} for 99 days
+  if "%lore of {_ei}%" contains "Infused with Air":
+    wait 1 tick
+    if "%lore of {_p}'s boots%" contains "Infused with Air":
+      apply jump boost 2 to {_p} for 99 days
+
+function tuneDamage(d: number, a: player, m: number) :: number:
+  set {_num} to {_d} * {_m}
+  if {_a}'s fall distance > 0:
+    if time since metadata value "critical" of {_a} > 17 ticks:
+      set metadata value "critical" of {_a} to now
+      set {_num} to random number between ({_num} - 3) and ({_num} + 2)
+      chance of 12%:
+        add (random number between 7 and 10.5) to {_num}
+      return {_num}
+      stop
+  set {_num} to random number between ({_num} - 5) and ({_num} + 0.5)
+  return {_num}
+
+function addLoredName(a: text, i: item) :: item:
+  set {_num} to amount of lore of {_i} + 1
+  set {_rtrn} to {_i}
+  set line {_num} of lore of {_rtrn} to "&5%{_a}%&5 - %now formatted as ""dd/MM/yyyy HH:mm""%"
+  return {_rtrn}
+
+
+
+
+
